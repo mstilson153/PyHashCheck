@@ -1,7 +1,7 @@
 # Imports for application.
 import sys
 import hashlib
-from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QLineEdit, QWidget, QFileDialog, QGridLayout, QMessageBox
+from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QLineEdit, QWidget, QFileDialog, QGridLayout, QMessageBox, QRadioButton, QComboBox
 from PyQt5 import QtCore
 from PyQt5.QtGui import QCursor
 
@@ -11,8 +11,6 @@ app = QApplication(sys.argv)
 # Initialize window.
 window = QWidget()
 window.setWindowTitle("PyHashCheck")
-window.setFixedWidth(500)
-#window.setStyleSheet("background: #161219;")
 
 # Function to create buttons of all the same style.
 def create_buttons(button_text):
@@ -41,17 +39,30 @@ def update_selected_file():
 def calculate_hash():
     file_path = selected_file
     expected_hash = input_hash_box.text()
-    algorithm = "sha256"
 
     if (file_path == ""):
         return
 
     block_size = 65536
 
-    if (algorithm == "sha256"):
+    if (alg_box.currentText() == "md5"):
+        print("Selected: md5")
+        file_hash = hashlib.md5()
+    elif (alg_box.currentText() == "sha1"):
+        print("Selected: sha1")
+        file_hash = hashlib.sha1()
+    elif (alg_box.currentText() == "sha224"):
+        print("Selected: sha224")
+        file_hash = hashlib.sha224()
+    elif (alg_box.currentText() == "sha256"):
+        print("Selected: sha256")
         file_hash = hashlib.sha256()
-    else:
-        file_hash = hashlib.sha256()
+    elif (alg_box.currentText() == "sha384"):
+        print("Selected: sha384")
+        file_hash = hashlib.sha384()
+    elif (alg_box.currentText() == "sha512"):
+        print("Selected: sha512")
+        file_hash = hashlib.sha512()
 
     with open(file_path, 'rb') as f:
         fb = f.read(block_size)
@@ -80,10 +91,16 @@ selected_file_label.setWordWrap(True)
 input_hash_label = create_labels("Enter expected hash: ")
 input_hash_box = QLineEdit(None)
 
+alg_label = create_labels("Select hash mode: ")
+alg_box = QComboBox()
+alg_box.addItems(["md5", "sha1", "sha224", "sha256", "sha384", "sha512"])
+
 calculate_button = create_buttons("Check Hash")
 calculate_button.clicked.connect(calculate_hash)
+
 select_file_button = create_buttons("Select File")
 select_file_button.clicked.connect(update_selected_file)
+
 reset_button = create_buttons("Reset")
 reset_button.clicked.connect(reset_forms)
 
@@ -92,12 +109,14 @@ grid = QGridLayout()
 
 window.setLayout(grid)
 
-grid.addWidget(selected_file_label, 0, 0, 1, 3)
+grid.addWidget(selected_file_label, 0, 0, 1, 6)
 grid.addWidget(input_hash_label, 1, 0)
 grid.addWidget(input_hash_box, 1, 1, 1, 2)
-grid.addWidget(reset_button, 2, 0)
-grid.addWidget(select_file_button, 2, 1)
-grid.addWidget(calculate_button, 2, 2)
+grid.addWidget(alg_label, 2, 0)
+grid.addWidget(alg_box, 2, 1, 1, 2)
+grid.addWidget(reset_button, 3, 0)
+grid.addWidget(select_file_button, 3, 1)
+grid.addWidget(calculate_button, 3, 2)
 
 # Display window.
 window.show()
