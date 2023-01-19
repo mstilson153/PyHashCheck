@@ -1,4 +1,5 @@
 # Imports for application.
+import os
 import sys
 import hashlib
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QLineEdit, QWidget, QFileDialog, QGridLayout, QMessageBox, QRadioButton, QComboBox
@@ -64,11 +65,15 @@ def calculate_hash():
         print("Selected: sha512")
         file_hash = hashlib.sha512()
 
+    total_size = os.path.getsize(file_path)
+
     with open(file_path, 'rb') as f:
         fb = f.read(block_size)
+        print(int(f.tell()) * 100 / int(total_size))
         while len(fb) > 0:
             file_hash.update(fb)
             fb = f.read(block_size)
+            print(int(f.tell()) * 100 / int(total_size))
     
     if (file_hash.hexdigest() == expected_hash):
         print("Hashes match!")
