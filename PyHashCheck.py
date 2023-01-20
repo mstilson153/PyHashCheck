@@ -2,8 +2,8 @@
 import os
 import sys
 import hashlib
-from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QLineEdit, QWidget, QFileDialog, QGridLayout, QMessageBox, QRadioButton, QComboBox
-from PyQt5 import QtCore
+from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QLineEdit, QWidget, QFileDialog, QGridLayout, QMessageBox, QProgressBar, QComboBox
+from PyQt5 import QtGui, QtCore
 from PyQt5.QtGui import QCursor
 
 # Initialize app.
@@ -12,6 +12,7 @@ app = QApplication(sys.argv)
 # Initialize window.
 window = QWidget()
 window.setWindowTitle("PyHashCheck")
+window.setWindowIcon(QtGui.QIcon('PyHashCheck.png'))
 
 # Function to create buttons of all the same style.
 def create_buttons(button_text):
@@ -69,11 +70,11 @@ def calculate_hash():
 
     with open(file_path, 'rb') as f:
         fb = f.read(block_size)
-        print(int(f.tell()) * 100 / int(total_size))
+        progress_bar.setValue(int(f.tell()) * 100 / int(total_size))
         while len(fb) > 0:
             file_hash.update(fb)
             fb = f.read(block_size)
-            print(int(f.tell()) * 100 / int(total_size))
+            progress_bar.setValue(int(f.tell()) * 100 / int(total_size))
     
     if (file_hash.hexdigest() == expected_hash):
         print("Hashes match!")
@@ -87,6 +88,7 @@ def reset_forms():
     selected_file = ""
     selected_file_label.setText("Selected File: " + selected_file)
     input_hash_box.setText("")
+    progress_bar.setValue(0)
 
 selected_file = ""
 
@@ -99,6 +101,9 @@ input_hash_box = QLineEdit(None)
 alg_label = create_labels("Select hash mode: ")
 alg_box = QComboBox()
 alg_box.addItems(["md5", "sha1", "sha224", "sha256", "sha384", "sha512"])
+
+progress_bar = QProgressBar()
+progress_bar.setValue(0)
 
 calculate_button = create_buttons("Check Hash")
 calculate_button.clicked.connect(calculate_hash)
@@ -119,9 +124,10 @@ grid.addWidget(input_hash_label, 1, 0)
 grid.addWidget(input_hash_box, 1, 1, 1, 2)
 grid.addWidget(alg_label, 2, 0)
 grid.addWidget(alg_box, 2, 1, 1, 2)
-grid.addWidget(reset_button, 3, 0)
-grid.addWidget(select_file_button, 3, 1)
-grid.addWidget(calculate_button, 3, 2)
+grid.addWidget(progress_bar, 3, 0, 1, 6)
+grid.addWidget(reset_button, 4, 0)
+grid.addWidget(select_file_button, 4, 1)
+grid.addWidget(calculate_button, 4, 2)
 
 # Display window.
 window.show()
