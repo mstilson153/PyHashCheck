@@ -6,6 +6,9 @@ from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QLineEdit, QWidge
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtGui import QCursor
 
+# Application version.
+VERSION = "1.0.0"
+
 # Initialize app.
 app = QApplication(sys.argv)
 
@@ -26,10 +29,12 @@ def create_labels(label_text):
     label = QLabel(label_text)
     return label
 
+# Function to open a native file picker to select a file to hash.
 def get_file():
     filename = QFileDialog().getOpenFileName(None, 'Select File')
     return filename
 
+# Function to extract the file path returned from Get_file() then update the path in the UI and selceted file variable.
 def update_selected_file():
     global selected_file
     file = get_file()
@@ -38,6 +43,8 @@ def update_selected_file():
         selected_file_label.setText("Selected File: " + str(file[0]))
     selected_file = file[0]
 
+# Function that actually calulates the selected files hash, and compares it to the expected value.
+# This function also updates the progress bar, calculates current progress, an launches result dialog boxes.
 def calculate_hash():
     file_path = selected_file
     expected_hash = input_hash_box.text()
@@ -83,6 +90,7 @@ def calculate_hash():
         print("Hashes do not match!")
         QMessageBox.warning(None, "Hash Calculated", "Hashes do not match!")
 
+# Function to reset the forms and selected file in the applicaiton.
 def reset_forms():
     global selected_file
     selected_file = ""
@@ -90,8 +98,10 @@ def reset_forms():
     input_hash_box.setText("")
     progress_bar.setValue(0)
 
+# Initialize selected file as null.
 selected_file = ""
 
+# Initialize various UI Widgets.
 selected_file_label = create_labels("Selected File: " + str(selected_file))
 selected_file_label.setWordWrap(True)
 
@@ -114,7 +124,7 @@ select_file_button.clicked.connect(update_selected_file)
 reset_button = create_buttons("Reset")
 reset_button.clicked.connect(reset_forms)
 
-# Initialize grid.
+# Initialize grid and add widgets.
 grid = QGridLayout()
 
 window.setLayout(grid)
