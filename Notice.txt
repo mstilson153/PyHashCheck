@@ -1,0 +1,10 @@
+Notices of open source software used by this application:
+
+=== PyQt ===
+
+This software was made possible by PyQt.
+A special thank you to Riverbank Computing and the developers of PyQt for making this possible.
+PyQt is licensed under GPLv3, and thus this software is as well.
+https://riverbankcomputing.com/software/pyqt/intro
+
+============
