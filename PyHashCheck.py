@@ -20,7 +20,7 @@ import sys
 import hashlib
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QLineEdit, QWidget, QFileDialog, QGridLayout, QMessageBox, QProgressBar, QComboBox
 from PyQt5 import QtGui, QtCore
-from PyQt5.QtGui import QCursor
+from PyQt5.QtGui import QCursor, QGuiApplication
 
 # Application version.
 VERSION = "1.0.0"
@@ -94,10 +94,12 @@ def calculate_hash():
     with open(file_path, 'rb') as f:
         fb = f.read(block_size)
         progress_bar.setValue(int(f.tell()) * 100 / int(total_size))
+        QGuiApplication.processEvents()
         while len(fb) > 0:
             file_hash.update(fb)
             fb = f.read(block_size)
             progress_bar.setValue(int(f.tell()) * 100 / int(total_size))
+            QGuiApplication.processEvents()
     
     if (file_hash.hexdigest() == expected_hash):
         print("Hashes match!")
